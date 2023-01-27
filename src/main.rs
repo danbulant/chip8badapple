@@ -56,22 +56,22 @@ fn main() -> Result<(), ffmpeg_next::Error> {
             0x41,  30, // 0x20E if V1 != 30 skip
             0xD0,0x12, // 0x210 draw sprite at V0, V1 with height 2
             0x70,0x08, // 0x212 V0 += 8
-            0x62, 120, // 0x214 V2 = 120
-            0xF2,0x1E, // 0x216 I += V2
+            0x62,  15, // 0x214 V2 = 15
+            0xF2,0x1E, // 0x216 I += V2 (I += 15)
 
             0x30,WIDTH, // 0x218 if V0 == WIDTH (64) skip
             0x12,0x0A, // 0x21A goto 0x20A
             0x71,  15, // 0x21C V1 += 15
-            0x31,  45, // 0x21E if V1 == 45 skip
+            0x31,  45, // 0x21E if V1 == 45 skip (0, 15, 30 should be rendered)
             0x12,0x08, // 0x220 goto 0x208
 
             // wait for next frame. Delay timer ticks every 1/60th of a second, video is 30fps, hence 2 ticks
-            0x6B,0x02, // 0x222 VB = 2
+            0x6B,0x02, // 0x222 VB = 1
             0xFB,0x15, // 0x224 delay timer = VB
             0xFB,0x07, // 0x226 VB = delay timer
 
-            0x4B,0x00, // 0x228 if VB != 0 skip
-            0x12,0x22, // 0x22A goto 0x222 (repeat wait)
+            0x3B,0x00, // 0x228 if VB == 0 skip
+            0x12,0x24, // 0x22A goto 0x224 (repeat wait)
 
             0x12,0x04, // 0x22C goto 0x204
             // unreachable, for future use
